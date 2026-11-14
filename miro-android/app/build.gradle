@@ -4,22 +4,50 @@ plugins {
 
 android {
     namespace 'app.miro'
-    compileSdk 34
+    compileSdk 36
 
     defaultConfig {
         applicationId 'app.miro.autofill'
         minSdk 24
-        targetSdk 34
-        versionCode 1
+        targetSdk 36
+        versionCode (System.getenv('GITHUB_RUN_NUMBER') ?: '1').toInteger()
         versionName '1.0'
     }
 
+    signingConfigs {
+        release {
+            def ks = System.getenv('KEYSTORE_FILE')
+            if (ks) {
+                storeFile file(ks)
+                storePassword System.getenv('KEYSTORE_PASSWORD')
+                keyAlias System.getenv('KEY_ALIAS')
+                keyPassword System.getenv('KEY_PASSWORD')
+            }
+        }
+    }
+
     buildTypes {
-        release { minifyEnabled false }
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
     lint { abortOnError false }
+}
+
+// A release bundle must be signed with the upload key; fail early and clearly if it is missing.
+tasks.configureEach { t ->
+    if (t.name == 'bundleRelease' || t.name == 'assembleRelease') {
+        t.doFirst {
+            def ks = System.getenv('KEYSTORE_FILE')
+            if (!ks || !file(ks).exists()) throw new GradleException('Upload key not found: KEYSTORE_FILE is missing. Check the KEYSTORE_BASE64 secret.')
+            ['KEYSTORE_PASSWORD', 'KEY_ALIAS', 'KEY_PASSWORD'].each { n ->
+                if (!System.getenv(n)) throw new GradleException("Secret ${n} is missing.")
+            }
+        }
+    }
 }
