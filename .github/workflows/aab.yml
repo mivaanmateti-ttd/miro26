@@ -37,6 +37,12 @@ jobs:
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: gradle bundleRelease --no-daemon
 
+      - name: Verify the bundle is signed
+        working-directory: ${{ steps.find.outputs.dir }}
+        run: |
+          unzip -l app/build/outputs/bundle/release/app-release.aab | grep -q "META-INF/.*\.RSA\|META-INF/.*\.SF" \
+            && echo "Signed OK" || { echo "::error::Bundle is NOT signed"; exit 1; }
+
       - uses: actions/upload-artifact@v4
         with:
           name: Miro-AAB
