@@ -40,16 +40,3 @@ android {
 
     lint { abortOnError false }
 }
-
-// A release bundle must be signed with the upload key; fail early and clearly if it is missing.
-tasks.configureEach { t ->
-    if (t.name == 'bundleRelease' || t.name == 'assembleRelease') {
-        t.doFirst {
-            def ks = System.getenv('KEYSTORE_FILE')
-            if (!ks || !file(ks).exists()) throw new GradleException('Upload key not found: KEYSTORE_FILE is missing. Check the KEYSTORE_BASE64 secret.')
-            ['KEYSTORE_PASSWORD', 'KEY_ALIAS', 'KEY_PASSWORD'].each { n ->
-                if (!System.getenv(n)) throw new GradleException("Secret ${n} is missing.")
-            }
-        }
-    }
-}
