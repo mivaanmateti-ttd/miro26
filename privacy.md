@@ -33,4 +33,4 @@ Miro is not directed at children under 13.
 We may update this policy. The latest version is always at this page.
 
 ## Contact
-Email: mukhesh.mateti@gmail.com
+Email: mirosupport9@gmail.com
