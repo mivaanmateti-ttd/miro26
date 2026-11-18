@@ -32,7 +32,7 @@ Miro is a browser. Websites you visit may collect data under their own policies.
 Delete a profile inside the app, or uninstall the app, and all stored data is removed from your device.
 
 ## Children
-Miro is not directed at children under 13.
+Miro is not directed at children. It is intended for users aged 18 and over. We do not knowingly collect personal information from children. Miro stores your profile data only on your device.
 
 ## Changes
 We may update this policy. The latest version is always at this page.
